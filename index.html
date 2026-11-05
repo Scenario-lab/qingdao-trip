@@ -15,6 +15,21 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 @media print{body{background:white}.masthead{padding:0}.hero{margin:15px 0}.header-actions,.daynav,.sidebar,.map-tools,.zoom-tools,.offscreen-chip,.popup,.legend,.page-footer,.map-footnotes,.compass{display:none!important}.layout{display:block;padding:0}.map-wrap{height:440px;min-height:0;border-radius:0;border:1px solid #aaa;print-color-adjust:exact;-webkit-print-color-adjust:exact}.trip-info{display:flex}.print-only{display:block}.print-day{break-inside:avoid;padding:16px 0;border-bottom:1px solid #ddd}.print-day h2{font-size:18px}.print-day p{font-size:10px;line-height:1.7;margin:5px 0}.print-day .print-stop{padding:7px 0}.print-day .print-stop b{font-size:11px}.print-day .print-transit{color:#637866;font-size:9px}.map-title{position:absolute}.attribution{font-size:8px}a{color:inherit}.marker,.map-label{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 </style>
+<style id="mobile-sheet-style">
+@media(max-width:760px){
+ .popup{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));top:auto;width:auto;max-height:62vh;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:1000;padding:22px 20px 18px;border-radius:18px;background:#fffef9;box-shadow:0 -4px 32px rgba(32,61,58,.28);animation:sheet-up .22s ease-out}
+ .popup::before{content:"";position:absolute;top:8px;left:50%;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:#d3dbd2}
+ .popup .pop-time{font-size:12px}
+ .popup h4{font-size:18px;margin:8px 40px 8px 0;line-height:1.4}
+ .popup p{font-size:14px;line-height:1.7;color:#4f6158}
+ .popup .pop-transit{font-size:13px}
+ .popup-close{top:10px;right:10px;width:36px;height:36px;font-size:26px;line-height:1;padding:0;border-radius:18px;background:#f1f1e8}
+ .popup .nav-link{font-size:14px;margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--soft)}
+ .popup .nav-link .icon{width:15px;height:15px}
+}
+@keyframes sheet-up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.popup{animation:none}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -182,6 +197,18 @@ $('print-content').innerHTML='<h2>青岛三天两晚 · 完整行程</h2>'+Objec
 $('print-btn').addEventListener('click',()=>window.print());
 new ResizeObserver(()=>{if(!pointerState.size)fitCurrent();}).observe(wrap);
 renderBasemap();setDay('1');
+</script>
+<script id="mobile-sheet-script">
+(function(){
+ var mq=window.matchMedia('(max-width:760px)'),pop=document.getElementById('popup'),home=pop.parentNode,anchor=home.querySelector('.map-bottom');
+ function place(){
+  if(mq.matches){if(pop.parentNode!==document.body)document.body.appendChild(pop);}
+  else if(pop.parentNode!==home){home.insertBefore(pop,anchor);}
+ }
+ place();
+ if(mq.addEventListener)mq.addEventListener('change',place);else if(mq.addListener)mq.addListener(place);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pop.hidden){var c=document.getElementById('popup-close');if(c)c.click();}});
+})();
 </script>
 </body>
 </html>
